@@ -44,7 +44,7 @@ entity = 'NTCH'
 # Connect to the Pixhawk devices for USV and UAV
 try:
     usv_vehicle = connect('COM7', baud=57600)
-    uav_vehicle = connect('COM8', baud=57600)
+    #uav_vehicle = connect('COM8', baud=57600)
 except Exception as e:
     print(f"Failed to connect to Pixhawk devices: {e}")
     sys.exit(1)
@@ -55,10 +55,10 @@ def usv_gps_callback(self, name, message):
     usv_lat = message.lat / 1e7  # Convert to decimal degrees
     usv_long = message.lon / 1e7
 
-def uav_gps_callback(self, name, message):
-    global uav_lat, uav_long
-    uav_lat = message.lat / 1e7  # Convert to decimal degrees
-    uav_long = message.lon / 1e7
+# def uav_gps_callback(self, name, message):
+#     global uav_lat, uav_long
+#     uav_lat = message.lat / 1e7  # Convert to decimal degrees
+#     uav_long = message.lon / 1e7
 
 # Placeholder function to check UAV mode (to be implemented later)
 def check_uav_mode():
@@ -83,16 +83,16 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         print(f"Sent USV Heartbeat message: {usv_nmea_hrb_msg}")
 
         # Check if UAV is in autonomous mode before sending the UAV heartbeat
-        if autonomous_mode == 2:
-            uav_data = f"RXHRB,{get_date()},{get_time()},{uav_lat},N,{uav_long},W,{entity},3,1"
-            uav_nmea_hrb_msg = attach_checksum(uav_data)
+        # if autonomous_mode == 2:
+        #     uav_data = f"RXHRB,{get_date()},{get_time()},{uav_lat},N,{uav_long},W,{entity},3,1"
+        #     uav_nmea_hrb_msg = attach_checksum(uav_data)
 
-            # Send UAV heartbeat message
-            sock.sendall(bytes(uav_nmea_hrb_msg + "\n", "utf-8"))
-            print(f"Sent UAV Heartbeat message: {uav_nmea_hrb_msg}")
+        #     # Send UAV heartbeat message
+        #     sock.sendall(bytes(uav_nmea_hrb_msg + "\n", "utf-8"))
+        #     print(f"Sent UAV Heartbeat message: {uav_nmea_hrb_msg}")
 
         time.sleep(1)
 
 # Close vehicle connections when the loop ends
 usv_vehicle.close()
-uav_vehicle.close()
+#uav_vehicle.close()
